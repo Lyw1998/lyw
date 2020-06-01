@@ -1,0 +1,60 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <meta charset="UTF-8">
+    <title>删除用户</title>
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/app.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}"/> 
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<style type="text/css">
+input{
+  width: 270px;
+  height:35px;
+}
+select{
+width:270px;
+height:30px;
+}
+option{
+width:270px;
+height:30px;
+font-size:14px;
+}
+
+</style>
+</head>
+<body style="background:linear-gradient(#4682B4,white)">
+	<div class="panel panel-primary">
+				<!-- .panel-heading 面板头信息。 -->		
+				<div class="panel-heading">
+					<!-- .panel-title 面板标题。 -->		
+			  	  <h3 class="panel-title">删除违规用户页面</h3>
+			  </div>
+			  <a style="padding-left:1100px" href="UserManager">返回用户信息列表</a>
+	 </div>
+	<div id="mainWrapper">
+		<div class="login-container">
+			<div class="login-card">
+				<div class="login-form">
+<form action="/deleteuser" method="post">
+	<div class="input-group input-sm">
+						<label class="input-group-addon"></label>
+  	<input name="id" type="text" placeholder="输入你要删除的用户id"  > 									
+    </div>
+    <br/>  <br/> 
+    <div class="form-actions">	
+    <input class="btn btn-block btn-primary btn-default" type="submit" value="提交">
+    </div>
+
+</form>
+ </div>
+ </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE>
+ <html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"></meta>
+<title>团体用户页面</title>
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}"/> 
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<style>
+.maintext{
+position:fixed;
+left:200px;
+top:200px;
+}
+*{margin:0; padding:0; font-size:14px;}
+/* a{color:#333;text-decoration:none} */
+.nav li a{ display:block; text-indent:20px; height:30px; line-height:25px; width:180px; background-color:#efefef; margin-bottom:1px;}
+.nav li a:hover{ background-color:#4682B4; color:#fff}
+h3{
+font-weight:bold;
+padding-left:100px;
+color:#000011;
+text-shadow:5px 5px 10px #333366;
+}
+p{
+font-weight:bold;
+padding-left:100px;
+color:#000011;
+text-shadow:5px 5px 10px #333366;
+}
+body{
+background-size:1250px 800px ;
+background-repeat: no-repeat;
+}
+.nav{
+position:fixed;
+top:100px;
+left:0px;
+z-index:1;
+} 
+</style>
+</head>
+<body background="img\jumao.jpg" >
+<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h1 class="panel-title">团体用户页面</h1>
+		</div>
+		 <a style="padding-left:1150px" href="logout">安全退出</a>
+</div>
+<div class="main">
+	<ul class="nav">
+    <li><a href="#">首　　页</a></li>
+    <li><a href="RescueManager">修改我的机构信息</a></li>
+    <li><a href="AdoptManager">猫狗资料管理</a></li>
+    <li><a href="#">更多...</a></li>
+	</ul>
+	<div class="maintext">
+	<h3>欢迎[<span size="30px" th:text="${user}">用户名</span>]访问团体用户页面!<br/>
+	<!-- 您的权限是<font color="red"><span th:text="${role}">权限</span></font><br/> -->
+	</h3><br>
+	
+	<p>真的感谢着你们这些为了流浪猫狗奉献着自己宝贵的时间和金钱的人儿，</p>
+	<p>若是没有你们，会有多少流浪猫狗病死街头！</p>
+	<p>试想能够在周末闲暇之余，放弃自己的休息时间，来到这里干一些粗活累活，只为能够让这里的猫猫狗狗存活得更舒适，是多么难能可贵。</p>
+	<p>更不敢想象愿意为了这些可怜的小动物放弃工作，全身心投入于拯救流浪动物的工作中来，需要多大的恒心！</p>
+	<p>感谢你们的存在，我们才能知道，人，原来还可以这么伟大地活着。</p>
+	</div>
+</div>	
+
+	<br/><br/><br/><br/><br/><br/><br/><br/>
+	<br/><br/><br/><br/><br/><br/><br/><br/>
+	<br/><br/><br/><br/><br/><br/><br/><br/>
+	
+</body>
+</html>

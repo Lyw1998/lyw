@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"></meta>
+<title>个体用户页面</title>
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}"/> 
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<style>
+.maintext{
+position:fixed;
+left:200px;
+margin-top:100px;
+}
+ h3{
+font-weight:bold;
+padding-left:150px;
+color:#000011;
+text-shadow:5px 5px 10px #333366;
+}
+.wenan{
+font-weight:bold;
+padding-left:250px;
+color:#000011;
+text-shadow:5px 5px 10px #333366;
+}
+h4{
+padding-left:650px;
+color:#000011;
+text-shadow:5px 5px 10px #333366;
+} 
+*{margin:0; padding:0; font-size:14px;}
+  a{color:#4682B4;text-decoration:none}  
+.nav li a{ display:block; text-indent:20px; height:30px; line-height:25px; width:180px; background-color:
+	#efefef; margin-bottom:1px;/*  float:left; */}
+.nav li a:hover{ background-color:#4682B4; color:#efefef}
+.nav{
+position:fixed;
+top:100px;
+left:0px;
+z-index:1;
+} 
+body{
+background-size:1250px 800px ;
+background-repeat: no-repeat;
+}
+
+</style>
+</head>
+<body background="img\gg.jpeg">
+<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h1 class="panel-title">个体用户页面</h1>
+		</div>
+		 <a style="padding-left:1150px" href="logout">安全退出</a>
+</div>
+<div class="main">
+	<ul class="nav">
+    <li><a href="#">首　　页</a></li>
+    <li><a href="RescueSelect">获取救助机构信息</a></li>
+    <li><a href="AdoptSelect">待领养流浪猫狗资料</a></li>
+    <li><a href="Knowledge">流浪猫狗知识科普</a></li>
+    <li><a href="notes">领养动物相关知识</a></li>
+    <li><a href="#">更多...</a></li>
+	</ul>
+	<div class="maintext">
+	<h3><font>致<span th:text="${user}">用户名</span>的一封信：</font></h3>
+	<h3>欢迎您！</h3>
+	<div class="wenan">
+	<p>请不要轻易开始，不要随意遗弃。</p>
+	<p>这些或喜或悲的流浪动物救助故事每天都在发生，我们倾尽全力，但有时也无能为力。</p>
+	<p>没有开始，就没有伤害，</p>
+	<p>比起问自己喜不喜欢小动物，我们更应该询问良心能不能对小动物负责任。</p>
+	</div>
+	<h4>——来自本平台的全体员工</h4>
+	</div>
+</div>
+	<br/><br/><br/><br/><br/><br/><br/><br/>
+	<br/><br/><br/><br/><br/><br/><br/><br/>
+	<br/><br/><br/><br/><br/><br/><br/><br/>
+</body>
+</html>

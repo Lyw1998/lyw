@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"></meta>
+<meta http-equiv="refresh" content="5;url=UserManager">
+<title>dba页面</title>
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}"/> 
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<style>
+h3{
+padding-left:100px;
+}
+
+</style>
+</head>
+<body>
+<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h1 class="panel-title">超级用户页面</h1>
+		</div>
+		 <a style="padding-left:1100px" href="logout">安全退出</a>
+</div>
+	<h3>欢迎[<font color="red"><span th:text="${user}">用户名</span></font>]访问访问DBA页面!
+	您的权限是<font color="red"><span th:text="${role}">权限</span></font><br/><br/>
+	<a href="UserManager">五秒后将进入用户管理页面...如果进入失败可以点击此链接</a></h3>
+	
+</body>
+</html>

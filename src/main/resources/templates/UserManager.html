@@ -1,0 +1,420 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<title>用户管理列表页面</title>
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}"/> 
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+$(function() {
+	$districtType = $("#districtType");
+	$cityType = $("#cityType");
+	$provinceType = $("#provinceType");
+	  $.ajax( {
+	        url : "/selectProvince",//省份的地址
+	        type : 'post',
+	        dataType:'json',
+	        success : function(data) {
+	            $.each(data, function (i, item) {//data为所有的数据，i表示编号，item表示第i行的数据
+	                $('#provinceType').append('<option value="'+data[i].dict_id+'">'+data[i].dict_item_name+'</option>');
+	            });
+	        },
+	        error :function (data) {
+	            $("#provinceType").append("<option value='1'>加菲猫</option>").append("<option value='2'>汤姆猫</option>");
+	        }
+	    });
+	
+	$provinceType.on("change", function() {
+		//获取当前选中的省份
+		var provinceId = $("#provinceType option:selected").val();
+		console.log(provinceId);
+		//ajax
+		$.ajax({
+			url : "/selectCity?dict_item_code="+provinceId,//上传到后台的地址
+			type : 'get',
+			dataType : 'json',
+			success : function(data) {
+				$('#cityType').empty();
+				$('#cityType').append('<option value="">'+' — 选择城市 — '+ '</option>');
+				$.each(data, function(i, item) {//data为所有的数据，i表示编号，item表示第i行的数据
+					$('#cityType').append(
+							'<option value="'+data[i].dict_id+'">'
+									+ data[i].dict_item_name
+									+ '</option>');
+				});
+			},
+			error : function(data) {
+				$("#cityType").append(
+						"<option value='1'>广州</option>").append(
+						"<option value='2'>深圳</option>");
+			}
+		});
+	})
+	
+
+	$cityType.on("change", function(){
+		//获取当前选中的城市
+		var cityId = $("#cityType option:selected").val();
+		console.log(cityId);
+ $.ajax({
+		url : "/selectDistrict?dict_item_code="+cityId,//上传到后台的地址
+		type : 'get',
+		dataType : 'json', 
+		//data:{'dict_item_code':4},
+		success : function(data) {
+			console.log(data);
+			$('#districtType').empty();
+			$('#districtType').append('<option value="">'+' — 选择区域 — '+ '</option>');
+			$.each(data, function(i, item) {//data为所有的数据，i表示编号，item表示第i行的数据
+				$('#districtType').append(
+						'<option value="'+data[i].dict_id/* data[i].dict_item_code */+'">'
+								+ data[i].dict_item_name
+								+ '</option>');
+			});
+		},
+		error : function(data) {
+			$("#districtType").append(
+					"<option value='1'>荔湾区</option>").append(
+					"<option value='2'>宝安区</option>");
+		}
+	});
+})
+
+	$districtType.on("change", function(){
+		//获取当前选中的地区
+		var districtId = $("#districtType option:selected").val();
+		console.log(districtId);
+ 
+})
+
+
+
+
+
+})
+</script>
+<script type="text/javascript">
+//var pageinfo;
+//console.log(pageinfo);
+$(document).ready(function(){
+	findAll();
+});
+function findAll(){
+			$.post("/findAll",null,
+					function(data){ 
+				var lists=data.list;
+				pageinfo=data;
+				page=pageinfo.pageNum;
+				pages=pageinfo.pages;
+				 $("#pageLabel").html("当前第" + pageinfo.pageNum + "页");
+				 $("#pagesLabel").html("当前第" + pageinfo.pages + "页");
+				$.each(lists,function(){
+					var tr  = $("<tr align='center'/>");
+					$("<td/>").html(this.id).appendTo(tr);
+					$("<td/>").html(this.username).appendTo(tr);
+		            $("<td/>").html(this.name).appendTo(tr); 
+		            $("<td/>").html(this.phone).appendTo(tr);
+		            $("<td/>").html(this.province).appendTo(tr);
+		            $("<td/>").html(this.city).appendTo(tr);
+		            $("<td/>").html(this.district).appendTo(tr);
+		            $("<td/>").html(this.address).appendTo(tr);
+		            $("<td/>").html(this.jglb).appendTo(tr);       
+		            $("<img id='img'/>").attr("src",""+this.picture).attr("height",100).appendTo("<td/>").appendTo(tr);
+		            $("<td/>").html(this.state).appendTo(tr);
+		            $("#usertable").append(tr);
+		        })
+			},"json");
+			
+}	
+</script>
+
+
+<script type="text/javascript">
+$(function(){
+		$('#find').click(function(){
+			var $name = $("#name").val();
+			var $phone = $("#phone").val();
+			var provinceId = $("#provinceType option:selected").val();
+			var cityId = $("#cityType option:selected").val();
+			var districtId = $("#districtType option:selected").val();
+			var jglbId = $("#jglbType option:selected").val();
+			console.log("na:"+$name);
+			console.log("ph:"+phone.value);
+			console.log("pro:"+provinceId);
+			console.log("ci:"+cityId);
+			console.log("dis:"+districtId);
+			console.log("jglb:"+jglbId);
+			$("#usertable tr:not(:first)").empty("");
+			$.post("/find",{
+				name:$name,
+				phone:phone.value,
+				province:provinceId,
+				city:cityId,
+				district:districtId,
+				jglb:jglbId,
+				},
+					function(data){ 
+				$.each(data,function(){
+					var tr  = $("<tr align='center'/>");
+					$("<td/>").html(this.id).appendTo(tr);
+					$("<td/>").html(this.username).appendTo(tr);
+		            $("<td/>").html(this.name).appendTo(tr); 
+		            $("<td/>").html(this.phone).appendTo(tr);
+		            $("<td/>").html(this.province).appendTo(tr);
+		            $("<td/>").html(this.city).appendTo(tr);
+		            $("<td/>").html(this.district).appendTo(tr);
+		            $("<td/>").html(this.address).appendTo(tr);
+		            $("<td/>").html(this.jglb).appendTo(tr);
+		           $("<img id='img'/>").attr("src",""+this.picture).attr("height",100).appendTo("<td/>").appendTo(tr);
+		            $("<td/>").html(this.state).appendTo(tr);
+		            $("#usertable").append(tr);
+		        })
+			},"json");	
+		})
+ }) 
+</script>
+
+<script type="text/javascript">	
+$(document).ready(function(){
+        var $beforeBtn = $("#beforeBtn");
+        var $afterBtn = $("#afterBtn");
+        $beforeBtn.click(function () {	
+        	$.post("/findAll?",{"page": page},
+    				function(data){
+        		var lists=data.list;
+        		pageinfo=data;
+    			$("#usertable tr:not(:first)").empty("");
+    			$.each(lists,function(){
+    				var tr  = $("<tr align='center'/>");
+    				$("<td/>").html(this.id).appendTo(tr);
+    				$("<td/>").html(this.username).appendTo(tr);
+    	            $("<td/>").html(this.name).appendTo(tr); 
+    	            $("<td/>").html(this.phone).appendTo(tr);
+    	            $("<td/>").html(this.province).appendTo(tr);
+    	            $("<td/>").html(this.city).appendTo(tr);
+    	            $("<td/>").html(this.district).appendTo(tr);
+    	            $("<td/>").html(this.address).appendTo(tr);
+    	            $("<td/>").html(this.jglb).appendTo(tr);       
+    	            $("<img id='img'/>").attr("src",""+this.picture).attr("height",100).appendTo("<td/>").appendTo(tr);
+    	            $("<td/>").html(this.state).appendTo(tr);
+    	            $("#usertable").append(tr);
+    	        })
+    		},"json");	  
+        	
+               
+               if (page == pages) {
+                   $afterBtn.attr({hidden: "hidden"});
+                  $("#pageLabel").html("当前第" + page + "页");
+                   $beforeBtn.removeAttr("hidden");
+                   page = parseInt(page) - 1;
+                   
+               } else if(parseInt(page) <= 1){
+            	   $beforeBtn.attr({hidden: "hidden"});
+            	   $afterBtn.removeAttr("hidden");
+             	  page = 1;
+             	 $("#pageLabel").html("当前第1页");
+               }
+               else{
+            	 
+            	   $beforeBtn.removeAttr("hidden");
+             	  $afterBtn.removeAttr("hidden");
+                   $("#pageLabel").html("当前第" + page + "页");
+                   page = parseInt(page) - 1;
+               }
+           })
+    
+         
+        
+		$('#afterBtn').click(function(){
+		$.post("/findAll?",{"page": page},
+				function(data){
+			var lists=data.list;
+    		pageinfo=data;
+			$("#usertable tr:not(:first)").empty("");
+			$.each(lists,function(){
+				var tr  = $("<tr align='center'/>");
+				$("<td/>").html(this.id).appendTo(tr);
+				$("<td/>").html(this.username).appendTo(tr);
+	            $("<td/>").html(this.name).appendTo(tr); 
+	            $("<td/>").html(this.phone).appendTo(tr);
+	            $("<td/>").html(this.province).appendTo(tr);
+	            $("<td/>").html(this.city).appendTo(tr);
+	            $("<td/>").html(this.district).appendTo(tr);
+	            $("<td/>").html(this.address).appendTo(tr);
+	            $("<td/>").html(this.jglb).appendTo(tr);       
+	            $("<img id='img'/>").attr("src",""+this.picture).attr("height",100).appendTo("<td/>").appendTo(tr);
+	            $("<td/>").html(this.state).appendTo(tr);
+	            $("#usertable").append(tr);
+	        })
+		},"json");
+		
+		      
+          if (page == pages) {
+              $afterBtn.attr({hidden: "hidden"});
+              $beforeBtn.removeAttr("hidden");
+              $("#pageLabel").html("当前第" + page + "页");
+          } else if(parseInt(page) <= 1){
+        	//  page = 1;
+        	  $beforeBtn.attr({hidden: "hidden"});
+        	  $afterBtn.removeAttr("hidden");	
+          	$("#pageLabel").html("当前第1页");
+          	page = parseInt(page) + 1;
+          }
+          else{ 
+        	  $beforeBtn.removeAttr("hidden");
+        	  $afterBtn.removeAttr("hidden");
+             $("#pageLabel").html("当前第" + page + "页");
+             page = parseInt(page) + 1;
+          }
+         
+         
+})
+})
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+	  $("button").click(function(){
+	  $("ul").toggle();
+	  });
+	});
+</script>
+
+<style>
+
+    img{
+              width: 100px;
+              height:80px;
+              margin:auto auto; 
+              position:relative;
+         
+		}
+		
+	#img img{
+	         width: 100%;
+	         transition:all;
+	         position: absolute;
+	    	 }
+	img:hover{
+         cursor: crosshair;
+            width: 500px;
+            height:400px;        
+       	 } 
+
+</style>
+<style type="text/css">
+*{margin:0; padding:0; font-size:14px;}
+  a{color:#4682B4;text-decoration:none}  
+.nav li a{ display:block; text-indent:20px; height:30px; line-height:25px; width:180px; background-color:
+	#efefef; margin-bottom:1px;/*  float:left; */}
+.nav li a:hover{ background-color:#4682B4; color:#efefef}
+.nav{
+position:fixed;
+top:100px;
+left:0px;
+z-index:1;
+} 
+button{
+background-color:#4682B4;
+color:#efefef;
+}
+button:hover{
+background-color:#efefef;
+color:#4682B4;
+}
+input{
+width:140px;
+height:20px;
+}
+select{
+width:130px;
+height:20px;
+}
+</style>
+</head>
+<body>
+	<div class="panel panel-primary">
+				<!-- .panel-heading 面板头信息。 -->		
+				<div class="panel-heading">
+					<!-- .panel-title 面板标题。 -->		
+			  	  <h3 class="panel-title">用户管理列表页面</h3>
+			  </div>
+			  <a style="padding-left:1100px" href="sp_user">返回超级用户主页</a>
+	 </div>
+	 
+	 <button type="button">隐藏</button>
+	 <ul class="nav">
+    <li><a href="updateuser">激活/冻结用户</a></li>
+    <li><a href="deleteuser">删除违规用户</a></li>
+    <li><a href="#">更多...</a></li>
+  </ul>		
+	<!-- .container 类用于固定宽度并支持响应式布局的容器。 -->
+	<div class="container">
+		<div class="col-md-12">
+			
+			  <div class="panel-body">
+				<!-- table-responsive:响应式表格,在一个表展示所有的数据,当不够显示的时候可以左右滑动浏览-->
+				<div class="table table-responsive">
+					<!--
+						 .table 类可以为其赋予基本的样式 — 少量的内补（padding）和水平方向的分隔线。
+	                	.table-bordered 类为表格和其中的每个单元格增加边框。
+	                	.table-hover 类可以让 <tbody> 中的每一行对鼠标悬停状态作出响应。
+	                -->
+	               <input id="name" type="text" name="name" placeholder="请输入用户姓名"/>
+	               <input id="phone" type="text" name="phone" placeholder="请输入用户联系电话"/>
+	                	<select id="provinceType" name="provinceType" >
+					            <option value=''> — 选择省份 — </option>
+					  	</select>
+						<select id="cityType" name="cityType" >
+					            <option value=''> — 选择城市 — </option>
+						</select>
+						<select id="districtType" name="districtType">
+					            <option value=''> — 选择区域 — </option>
+					  	</select>
+						
+						<select id="jglbType" name="jglbType">
+					            <option  value=''> — 选择机构类别 — </option>
+								<option value="132">宠物医院</option>
+								<option value="133">救助站</option>	
+								<option value="134">志愿者组织</option>	
+					  	</select>
+					
+					<button id="find">查询</button>
+					                                 
+					<table class="table table-bordered table-hover" id="usertable">
+						<thead>
+							<tr>
+							<th class="text-center">用户id</th>
+							<th class="text-center">用户名</th>
+							<th class="text-center">姓名</th>	
+							<th class="text-center">手机号码</th>
+							<th class="text-center">省份</th>
+							<th class="text-center">城市</th>
+							<th class="text-center">区域</th>
+							<th class="text-center">地址</th>
+							<th class="text-center">机构类别</th>
+							<th class="text-center">营业执照</th>
+							<th class="text-center">激活状态</th>						
+							</tr>
+						</thead>
+						<tbody class="text-center"></tbody>
+									
+						
+					</table>
+					<div>
+					<button id="beforeBtn">上一页</button>
+ 				 	<label id="pageLabel"></label> 
+              		<button id="afterBtn">下一页</button>
+              		<br/>
+              		<label id="pagesLabel" ></label> 
+              		</div>
+				</div>
+			</div>
+			</div>
+		</div>
+
+</body>
+</html>

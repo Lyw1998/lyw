@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <title>流浪猫狗救助平台</title>
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/app.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}"/> 
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<script type="text/javascript">
+	$(function(){
+		$("#gt_loginBtn").click(function(){
+			var username = $("#username");
+			var password = $("#password");
+			var msg = "";
+			if(username.val() == ""){
+				msg = "登录名称不能为空!";
+				username.focus();
+			}else if(password.val() == ""){
+				msg = "密码不能为空!";
+				password.focus();
+			}
+			if(msg != ""){
+				alert(msg);
+				return false;
+			}
+	 		$("#gt_loginForm").submit();
+			
+		});
+			
+	});
+</script>
+<style>
+input{
+width: 150px; 
+height:30px;
+}
+</style>
+</head>
+<body>
+<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title">用户登录页面</h3>
+		</div>
+</div>
+<div id="mainWrapper">
+		<div class="login-container">
+			<div class="login-card">
+				<div class="login-form">
+					<!-- 表单提交到login -->
+					<form id="gt_loginForm" th:action="@{/authentication/form}" method="post" class="form-horizontal">									
+					<!-- 	用户名或密码错误提示 -->	
+					<div th:if="${param.error != null}">
+					<div class="alert alert-danger">
+					<p style="color: red"  th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></p> 
+					</div>
+					</div>						
+						<!-- 注销提示 -->
+					<div th:if="${param.logout != null}">
+						  <div class="alert alert-success">
+								<p><font color="red">用户已注销成功!</font></p>
+							</div>
+					</div>						
+						<div class="input-group input-sm">
+							<label class="input-group-addon"><i class="fa fa-user"></i></label>
+							<input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名"/>
+						</div>
+						<div class="input-group input-sm">
+							<label class="input-group-addon"><i class="fa fa-lock"></i></label> 
+							<input type="password" class="form-control" id="password" name="password" placeholder="请输入密码"/>
+						</div>
+						
+						<div class="input-group input-sm">
+							<label class="input-group-addon"></label> 
+							<input type="text" name="imageCode" placeholder="请输入图形验证码"/>
+					 <img src="/code/image" width="120px" height="30px">
+						</div>
+						
+						<div class="form-actions">
+							<input id="gt_loginBtn" type="button" class="btn btn-block btn-primary btn-default" value="登录"/>
+						<a href="gt_register">个体用户注册</a><br/>
+						<a href="tt_register">团体用户注册</a><font color="red" > ←组织机构入驻！</font><br/>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<title>机构信息管理页面</title>
+
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/app.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}" />
+<link rel="stylesheet" type="text/css"
+	href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<script>
+	$(function() {
+		$districtType = $("#districtType");
+		$cityType = $("#cityType");
+		$provinceType = $("#provinceType");
+		$.ajax({
+			url : "/selectProvince",//省份的地址
+			type : 'post',
+			dataType : 'json',
+			success : function(data) {
+				$.each(data, function(i, item) {//data为所有的数据，i表示编号，item表示第i行的数据
+					$('#provinceType').append(
+							'<option value="'+data[i].dict_id+'">'
+									+ data[i].dict_item_name + '</option>');
+				});
+			},
+			error : function(data) {
+				$("#provinceType").append("<option value='1'>加菲猫</option>")
+						.append("<option value='2'>汤姆猫</option>");
+			}
+		});
+
+		$provinceType.on("change", function() {
+			//获取当前选中的省份
+			var provinceId = $("#provinceType option:selected").val();
+			console.log(provinceId);
+			//ajax
+			$.ajax({
+				url : "/selectCity?dict_item_code=" + provinceId,//上传到后台的地址
+				type : 'get',
+				dataType : 'json',
+				success : function(data) {
+					$('#cityType').empty();
+					$('#cityType').append('<option value="">'+  '— 选择城市 — '+ '</option>');
+					$.each(data,
+							function(i, item) {//data为所有的数据，i表示编号，item表示第i行的数据
+								$('#cityType').append(
+										'<option value="'+data[i].dict_id+'">'
+												+ data[i].dict_item_name
+												+ '</option>');
+							});
+				},
+				error : function(data) {
+					$("#cityType").append("<option value='1'>广州</option>")
+							.append("<option value='2'>深圳</option>");
+				}
+			});
+		})
+
+		$cityType.on("change", function() {
+			//获取当前选中的省份
+			var cityId = $("#cityType option:selected").val();
+			console.log(cityId);
+			$.ajax({
+				url : "/selectDistrict?dict_item_code=" + cityId,//上传到后台的地址
+				type : 'get',
+				dataType : 'json',
+				//data:{'dict_item_code':4},
+				success : function(data) {
+					console.log(data);
+					$('#districtType').empty();
+					$('#districtType').append('<option value="">'+  '— 选择区域 — '+ '</option>');
+					$.each(data,
+							function(i, item) {//data为所有的数据，i表示编号，item表示第i行的数据
+								$('#districtType').append(
+										'<option value="'+data[i].dict_id+'">'
+												+ data[i].dict_item_name
+												+ '</option>');
+							});
+				},
+				error : function(data) {
+					$("#districtType").append("<option value='1'>荔湾区</option>")
+							.append("<option value='2'>宝安区</option>");
+				}
+			});
+		})
+
+		//提交
+		$("#updateUserBtn").click(
+				function() {
+					var username = $("#username").val();
+					var name = $("#name").val();
+					var phone = $("#phone").val();
+					var province = $("#provinceType option:selected").val();
+					var city = $("#cityType option:selected").val();
+					var district = $("#districtType option:selected").val();
+					var address=$("#address").val();
+					var jglb = $("#jglbType option:selected").val();
+					var picture = $("#picture").val();
+					console.log(username, name, phone, province, city,
+							district, picture);
+					if (username == ""
+						||name == "" || phone == ""
+							|| province == "" || city == ""
+							|| district == "" || jglb == ""
+							|| picture == "") {
+						alert("请填写完整的信息");
+						
+						return;
+					} else {
+						$.ajax({
+							url : "/updateTT",
+							data : {
+								"username" : username,
+								"name" : name,
+								"phone" : phone,
+								"province" : province,
+								"city" : city,
+								"district" : district,
+								"address" : address,
+								"jglb" : jglb,
+								"picture" : picture
+							},
+							type : 'post',
+							success : function(data) {
+								console.log(username, name,
+										phone, province, city, district,
+										picture);
+								alert("修改资料完毕");
+							}
+						});
+					}
+				})
+
+	})
+</script>
+
+<style type="text/css">
+label{
+   width: 150px; 
+height:15px;
+}
+select{
+ width: 109px;
+}
+select.jglb{
+ width: 330px;
+}
+</style>
+</head>
+<body style="background:linear-gradient(#4682B4,white)">
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title">修改我的机构信息</h3>
+		</div>
+		 <a style="padding-left:1100px" href="tt_user">返回团体用户主页</a>
+	</div>
+	<div id="mainWrapper">
+		<div class="login-container">
+			<div class="login-card">
+				<!-- 	 <h3>用户：[<span th:text="${user}">用户名</span>] 进入其信息管理页面！</h3> -->
+				<div class="login-form">
+					<!--  <form id="RescueManagerForm" th:action="@{/updateTT}" method="post" class="form-horizontal"> -->
+					<font color="red">请根据提示进行操作，否则操作将会失败!&nbsp;<br/>您的用户名为：<b
+						th:text="${user}"></b></font>
+					<div class="input-group input-sm">
+						<label class="input-group-addon"><i class="fa fa-user"></i></label>
+						<input type="text" class="form-control" id="username"
+							name="username" th:valuetype="${user}" placeholder="输入用户名" />
+					</div>
+
+
+					<div class="input-group input-sm">
+						<label class="input-group-addon"><i class="fa fa-lock"></i></label>
+						<input type="text" class="form-control" id="name" name="name"
+							placeholder="请输入姓名" />
+					</div>
+					<div class="input-group input-sm">
+						<label class="input-group-addon"><i class="fa fa-phone"></i></label>
+						<input type="text" class="form-control" id="phone" name="phone"
+							placeholder="请输入联系电话" />
+					</div>
+					<div class="input-group input-sm">
+						<label class="input-group-addon"></label>
+						 <select
+							id="provinceType" name="provinceType">             
+							<option value='province'>— 选择省份 —</option>   
+						</select>
+						
+						 <select id="cityType" name="cityType">             
+							<option value='city'>— 选择城市 —</option>   
+						</select>
+						
+						<select id="districtType" name="districtType">             
+							<option value='district'>— 选择区域 —</option>   
+						</select>
+						
+					</div>
+					<div class="input-group input-sm">
+							<label class="input-group-addon"></label> 
+							<input type="text" class="form-control" id="address" name="address" placeholder="请输入组织地址"/>
+						</div>		
+
+					<div class="input-group input-sm">
+						<label class="input-group-addon"></label><select class="jglb" id="jglbType"
+							name="jglbType">             
+							<option value='jglb'>— 选择机构类别 —</option>
+							<option value="132">宠物医院</option>
+							<option value="133">救助站</option>
+							<option value="134">志愿者组织</option>   
+						</select>
+					</div>
+					<div class="input-group input-sm">
+						<label class="input-group-addon"></label>
+						<input type="file" class="form-control" id="picture"
+							name="picture" placeholder="请上传营业执照" />
+					</div>
+
+					<div class="form-actions">
+						<input id="updateUserBtn" type="button"
+							class="btn btn-block btn-primary btn-default" value="修改资料" /> 
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

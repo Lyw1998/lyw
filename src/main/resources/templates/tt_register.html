@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <title>团体用户注册页面</title>
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{css/app.css}" />
+<link rel="stylesheet" th:href="@{css/bootstrap-theme.min.css}"/> 
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
+<script type="text/javascript" th:src="@{js/jquery-1.11.0.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<script>
+$(function() {
+	$districtType = $("#districtType");
+	$cityType = $("#cityType");
+	$provinceType = $("#provinceType");
+	  $.ajax( {
+	        url : "/selectProvince",//省份的地址
+	        type : 'post',
+	        dataType:'json',
+	        success : function(data) {
+	            $.each(data, function (i, item) {//data为所有的数据，i表示编号，item表示第i行的数据
+	                $('#provinceType').append('<option value="'+data[i].dict_id+'">'+data[i].dict_item_name+'</option>');
+	            });
+	        },
+	        error :function (data) {
+	            $("#provinceType").append("<option value='1'>加菲猫</option>").append("<option value='2'>汤姆猫</option>");
+	        }
+	    });
+	
+	$provinceType.on("change", function() {
+		//获取当前选中的省份
+		var province = $("#provinceType option:selected").val();
+		console.log(province);
+		//ajax
+		$.ajax({
+			url : "/selectCity?dict_item_code="+province,//上传到后台的地址
+			type : 'get',
+			dataType : 'json',
+			success : function(data) {
+				$('#cityType').empty();
+				$('#cityType').append('<option value="">'+  '— 选择城市 — '+ '</option>');
+				$.each(data, function(i, item) {//data为所有的数据，i表示编号，item表示第i行的数据
+					$('#cityType').append(
+							'<option value="'+data[i].dict_id+'">'
+									+ data[i].dict_item_name
+									+ '</option>');
+				});
+			},
+			error : function(data) {
+				$("#cityType").append(
+						"<option value='1'>广州</option>").append(
+						"<option value='2'>深圳</option>");
+			}
+		});
+	})
+	
+
+	$cityType.on("change", function(){
+		//获取当前选中的省份
+		var city= $("#cityType option:selected").val();
+		console.log(city);
+ $.ajax({
+		url : "/selectDistrict?dict_item_code="+city,//上传到后台的地址
+		type : 'get',
+		dataType : 'json', 
+		//data:{'dict_item_code':4},
+		success : function(data) {
+			console.log(data);
+			$('#districtType').empty();
+			$('#districtType').append('<option value="">'+  '— 选择区域 — '+ '</option>');
+			$.each(data, function(i, item) {//data为所有的数据，i表示编号，item表示第i行的数据
+				$('#districtType').append(
+						'<option value="'+data[i].dict_id+'">'
+								+ data[i].dict_item_name
+								+ '</option>');
+			});
+		},
+		error : function(data) {
+			$("#districtType").append(
+					"<option value='1'>荔湾区</option>").append(
+					"<option value='2'>宝安区</option>");
+		}
+	});
+})
+
+$districtType.on("change", function(){
+		//获取当前选中的地区
+		var districtId = $("#districtType option:selected").val();
+		console.log(districtId);
+})
+
+$("#tt_registerBtn").click(function(){
+	var username = $("#username").val();
+	var name = $("#name").val();
+	var password = $("#password").val();
+	var phone= $("#phone").val();
+	var province = $("#provinceType option:selected").val();
+	var city = $("#cityType option:selected").val();
+	var district = $("#districtType option:selected").val();
+	var address=$("#address").val();
+	var picture=$("#picture").val();
+	console.log(username, name,password,phone,province, city, district,picture);
+
+	if (username == "username"
+		|| password == "password"
+		|| name == "name"
+		|| phone == "phone"
+		|| province == "province"
+		|| city == "city"
+		|| district == "district"
+		|| address == "address"
+		|| picture == "picture") {
+			alert("请填写所有的信息");
+			alert("有疑问可电话联系管理员13556703216");
+			return;
+		} else {
+			$.ajax({
+				url : "/t_register",//上传到后台的地址
+				data : {
+					"username" : username,
+					"password":password,
+					"name" : name,
+					"phone" : phone,
+					"province" : province,
+					"city" : city,
+					"district" : district,
+					"address" : address,
+					"picture" : picture
+					
+				},
+				type : 'post',
+				success : function(data) {
+					alert("注册后，请拨打13556703216  联系管理员审核资料！待资料通过后方可登录。");
+				}
+			});
+		} 
+});
+
+})
+</script>
+
+<style type="text/css">
+label{
+width: 150px; 
+height:15px;
+}
+select{
+ width: 109px;
+}
+
+</style>
+</head>
+<body>
+<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h3 class="panel-title">团体用户注册页面</h3>
+		</div>
+		 <a style="padding-left:1050px" href="gt_login">返回登录界面</a>
+</div>
+<div id="mainWrapper">
+		<div class="login-container">
+			<div class="login-card"  >
+				<div class="login-form">			
+						<div class="input-group input-sm">
+							<label class="input-group-addon"><i class="fa fa-user"></i></label>
+							<input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名"/>
+						</div>
+						<div class="input-group input-sm">
+							<label class="input-group-addon"><i class="fa fa-lock"></i></label> 
+							<input type="password" class="form-control" id="password" name="password" placeholder="请输入密码"/>
+						</div>						
+						<div class="input-group input-sm">
+							<label class="input-group-addon"><i class="fa fa-user"></i></label> 
+							<input type="text" class="form-control" id="name" name="name" placeholder="请输入名称"/>
+						</div>						
+						<div class="input-group input-sm">
+							<label class="input-group-addon"><i class="fa fa-phone"></i></label> 
+							<input type="text" class="form-control" id="phone" name="phone" placeholder="请输入联系电话"/>
+						</div>						
+					<div class="input-group input-sm">
+						<label class="input-group-addon"></label>
+						 <select id="provinceType" name="provinceType">             
+							<option value='province'>— 选择省份 —</option>   
+						</select>						
+						 <select id="cityType" name="cityType">             
+							<option value='city'>— 选择城市 —</option>   
+						</select>						
+						<select id="districtType" name="districtType">             
+							<option value='district'>— 选择区域 —</option>   
+						</select>						
+					</div>						
+						<div class="input-group input-sm">
+							<label class="input-group-addon"></label> 
+							<input type="text" class="form-control" id="address" name="address" placeholder="请输入组织地址"/>
+						</div>						
+						<div class="input-group input-sm">
+							<label class="input-group-addon"><i class="fa fa-file"></i></label> 
+							<input type="file" class="form-control" id="picture" name="picture" th:text="请上传你们机构的营业执照！！！"/>
+						</div>						
+						<div class="form-actions">
+							<input id="tt_registerBtn" type="button" class="btn btn-block btn-primary btn-default" value="注册"/>						
+						</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
